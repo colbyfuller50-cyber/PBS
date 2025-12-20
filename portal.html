@@ -1,152 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Palmetto Background Screening | Client Portal</title>
-<link rel="stylesheet" href="style.css">
-<style>
-/* ===========================
-   Portal Page Specific Styles
-   =========================== */
-
-.portal-section {
-    padding: 4rem 2rem;
-    background-color: #f9f9f9;
-    text-align: center;
-}
-
-.portal-section h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #1b3b1b;
-}
-
-.portal-section p {
-    margin-bottom: 3rem;
-    font-size: 1.1rem;
-    color: #333;
-}
-
-.portal-login, .portal-upload {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.portal-login h2, .portal-upload h2 {
-    margin-bottom: 1rem;
-    color: #1b3b1b;
-}
-
-.portal-login input, .portal-upload input {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.portal-login button, .portal-upload button {
-    width: 100%;
-    padding: 1rem;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#uploadStatus {
-    margin-top: 1rem;
-    font-weight: bold;
-    color: #4caf50;
-}
-</style>
+  <title>PBS Client Portal</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
 </head>
 <body>
-<header>
-  <div class="container header-container">
-    <a href="index.html">
-      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" alt="PBS Logo" class="logo">
-    </a>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="screening.html">Request a Screening</a></li>
-        <li><a href="portal.html">Client Portal</a></li>
-      </ul>
-      <div class="hamburger" id="hamburger">
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </nav>
-  </div>
-</header>
 
-<section class="portal-section">
-  <div class="container">
-    <h1>Client Portal</h1>
-    <p>Log in to track the status of your requests and securely submit your documents.</p>
-    
-    <!-- Login Form -->
-    <div class="portal-login">
-      <h2>Login</h2>
-      <form id="loginForm">
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
-        <button type="submit" class="btn">Login</button>
-      </form>
-    </div>
+<h2>Client Portal</h2>
 
-    <!-- Document Upload -->
-    <div class="portal-upload">
-      <h2>Submit Your Documents</h2>
-      <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="document" required>
-        <button type="submit" class="btn">Upload</button>
-      </form>
-      <p id="uploadStatus"></p>
-    </div>
-  </div>
-</section>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login / Sign Up</button>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2025 Palmetto Background Screening (PBS). All Rights Reserved.</p>
-  </div>
-</footer>
+<hr>
+
+<input type="file" id="fileInput">
+<button onclick="upload()">Upload Document</button>
+
+<h3>Your Requests</h3>
+<div id="requests"></div>
 
 <script>
-// Hamburger Menu
-const hamburger = document.getElementById('hamburger');
-const navLinks = document.querySelector('.nav-links');
-hamburger.addEventListener('click', () => {
-  navLinks.classList.toggle('show');
-});
+const supabase = supabase.createClient(
+  'YOUR_PROJECT_URL',
+  'YOUR_PUBLIC_ANON_KEY'
+);
 
-// Placeholder login functionality
-document.getElementById('loginForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  alert('Login functionality coming soon!'); 
-});
+async function login() {
+  const email = email.value;
+  const password = password.value;
 
-// Placeholder upload functionality
-document.getElementById('uploadForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  document.getElementById('uploadStatus').textContent = "Document submitted successfully! (This is a demo message.)";
-});
+  await supabase.auth.signInWithPassword({ email, password })
+    .catch(async () => {
+      await supabase.auth.signUp({ email, password });
+    });
+
+  loadRequests();
+}
+
+async function upload() {
+  const file = document.getElementById('fileInput').files[0];
+  const user = (await supabase.auth.getUser()).data.user;
+
+  await supabase.storage
+    .from('documents')
+    .upload(`${user.id}/${file.name}`, file);
+
+  alert("Uploaded");
+}
+
+async function loadRequests() {
+  const { data } = await supabase
+    .from('requests')
+    .select('*');
+
+  document.getElementById('requests').innerHTML =
+    data.map(r => `<p>${r.request_type} — ${r.status}</p>`).join('');
+}
 </script>
+
 </body>
 </html>
-
 
 </script>
 </body>
