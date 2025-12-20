@@ -58,6 +58,7 @@ nav ul li a {
 /* Hamburger Menu */
 .hamburger {
     display: none;
+    text-align: center;
     flex-direction: column;
     cursor: pointer;
     gap: 5px;
