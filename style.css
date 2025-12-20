@@ -159,6 +159,7 @@ footer {
         display: none; 
         text-align: center; /* centers text */
         align-items: center; /* centers flex items horizontally */
+        padding: 1rem 0; /* optional spacing top/bottom */
     } 
     nav ul.show {
         display: flex;
