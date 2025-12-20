@@ -22,9 +22,12 @@ header {
 /* Flex container for header content */
 .header-container {
     display: flex;
-    justify-content: space-between; /* logo left, menu right */
-    align-items: center; /* vertically aligns logo and menu */
-    height: 100px; /* optional: sets a consistent header height */
+    justify-content: space-between;
+    align-items: center;
+    height: 80px; /* compact header height */
+    padding: 0 2rem; /* add space on left and right */
+    max-width: 1100px; /* optional: keep content centered on large screens */
+    margin: 0 auto; /* center container */
 }
 
 /* Logo size */
