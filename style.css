@@ -238,3 +238,77 @@ section h1 {
     }
 }
 </style>
+
+/////* Full-screen services section */////
+.services-section {
+    min-height: 100vh; /* fill viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* heading at top */
+    align-items: center;
+    padding: 4rem 2rem;
+    background-color: #f9f9f9;
+}
+
+/* Services heading */
+.services-section h1 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    color: #1b3b1b;
+    text-align: center;
+}
+
+/* Grid for service cards */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+/* Service Cards */
+.service-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Hover effect */
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* Reveal animation */
+.service-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Headings in card */
+.service-card h2 {
+    color: #1b3b1b;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #4caf50;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* List inside card */
+.service-card ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+/* Pricing text */
+.service-card p {
+    font-weight: bold;
+    color: #4caf50;
+    font-size: 1.1rem;
+}
