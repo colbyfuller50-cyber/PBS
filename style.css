@@ -17,8 +17,10 @@ header {
     color: white; 
     padding: 1rem 0; 
 }
-header .logo { 
-    height: 50px; 
+/* Logo size */
+header .logo {
+    height: 80px; /* increase from 50px to 80px */
+    width: auto;  /* keeps aspect ratio */
 }
 
 /* Flex for logo and nav */
