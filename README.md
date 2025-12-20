@@ -17,3 +17,4 @@ Static HTML/CSS website for Palmetto Background Screening (PBS) with multi-page 
 - Replace `YOUR_FORMSPREE_ID` in `contact.html` with your actual Formspree form ID.
 - Replace placeholder images in `images/` with your logo and hero image.
 - Customize text and pricing in `services.html` as needed.
+- http://palmettobgs.com/
