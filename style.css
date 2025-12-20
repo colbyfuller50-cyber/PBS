@@ -157,6 +157,8 @@ footer {
         flex-direction: column; 
         width: 200px;
         display: none; 
+        text-align: center; /* centers text */
+        align-items: center; /* centers flex items horizontally */
     } 
     nav ul.show {
         display: flex;
