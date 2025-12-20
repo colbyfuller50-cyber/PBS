@@ -15,8 +15,17 @@
 header { 
     background-color: #1b3b1b; 
     color: white; 
-    padding: 0rem 0; 
+    padding: 0; /* removes all top/bottom padding */
 }
+
+/* Flex container for header content */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* logo left, menu right */
+    align-items: center; /* vertically aligns logo and menu */
+    height: 70px; /* optional: sets a consistent header height */
+}
+
 /* Logo size */
 header .logo {
     height: 200px; /* increase from 50px to 80px */
