@@ -15,11 +15,11 @@
 header { 
     background-color: #1b3b1b; 
     color: white; 
-    padding: -1rem 0; 
+    padding: 0rem 0; 
 }
 /* Logo size */
 header .logo {
-    height: 150px; /* increase from 50px to 80px */
+    height: 160px; /* increase from 50px to 80px */
     width: auto;  /* keeps aspect ratio */
 }
 
