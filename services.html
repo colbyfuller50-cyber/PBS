@@ -73,6 +73,23 @@ hamburger.addEventListener('click', () => {
   navLinks.classList.toggle('show');
 });
 </script>
+<script>
+// Animate service cards on scroll
+const serviceCards = document.querySelectorAll('.service-card');
+
+function checkCards() {
+  const triggerBottom = window.innerHeight * 0.85;
+  serviceCards.forEach(card => {
+    const cardTop = card.getBoundingClientRect().top;
+    if(cardTop < triggerBottom) {
+      card.classList.add('show');
+    }
+  });
+}
+
+window.addEventListener('scroll', checkCards);
+window.addEventListener('load', checkCards); // animate on load
+</script>
 
 </body>
 </html>
