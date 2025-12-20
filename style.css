@@ -19,7 +19,7 @@ header {
 }
 /* Logo size */
 header .logo {
-    height: 160px; /* increase from 50px to 80px */
+    height: 200px; /* increase from 50px to 80px */
     width: auto;  /* keeps aspect ratio */
 }
 
