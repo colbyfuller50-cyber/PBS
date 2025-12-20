@@ -23,7 +23,7 @@ header {
     display: flex;
     justify-content: space-between; /* logo left, menu right */
     align-items: center; /* vertically aligns logo and menu */
-    height: 70px; /* optional: sets a consistent header height */
+    height: 100px; /* optional: sets a consistent header height */
 }
 
 /* Logo size */
