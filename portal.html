@@ -71,6 +71,11 @@
 
 #portalDashboard {
     display: none;
+   <hr style="margin:20px 0;">
+
+<h2>My Requests</h2>
+<div id="requestList">Loading your requests...</div>
+
 }
 
 .status {
@@ -189,16 +194,24 @@ async function logout() {
   location.reload();
 }
 
-function showDashboard() {
+async function showDashboard() {
   document.getElementById("loginCard").style.display = "none";
   document.getElementById("portalDashboard").style.display = "block";
+  loadRequests();
 }
+
 
 /* ===========================
    FILE UPLOAD
 =========================== */
 async function uploadFile() {
-  const file = document.getElementById("fileInput").files[0];
+ await supabase.from("requests").insert({
+  user_id: user.id,
+  file_name: file.name,
+  file_url: data.publicUrl,
+  status: "Submitted"
+});
+   const file = document.getElementById("fileInput").files[0];
   if (!file) return;
 
   const { data: userData } = await supabaseClient.auth.getUser();
@@ -232,6 +245,42 @@ supabaseClient.auth.getSession().then(({ data }) => {
     showDashboard();
   }
 });
+
+   <script>
+async function loadRequests() {
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData.user) return;
+
+  const { data, error } = await supabase
+    .from("requests")
+    .select("file_name, status, created_at")
+    .eq("user_id", userData.user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    document.getElementById("requestList").textContent = error.message;
+    return;
+  }
+
+  if (data.length === 0) {
+    document.getElementById("requestList").textContent = "No requests submitted yet.";
+    return;
+  }
+
+  let html = "<ul style='list-style:none;padding:0'>";
+  data.forEach(r => {
+    html += `
+      <li style="padding:10px;border-bottom:1px solid #ddd">
+        <strong>${r.file_name}</strong><br>
+        Status: <span style="color:#1b3b1b;font-weight:bold">${r.status}</span>
+      </li>`;
+  });
+  html += "</ul>";
+
+  document.getElementById("requestList").innerHTML = html;
+}
+</script>
+
 </script>
 
 </html>
