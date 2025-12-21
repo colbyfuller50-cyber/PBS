@@ -141,84 +141,97 @@
 <script>
 /* ===========================
    Supabase Config
-   =========================== */
+=========================== */
 const supabaseUrl = "https://snlhlitlenlqzabwaldg.supabase.co";
 const supabaseKey = "sb_publishable_4tKa1p6b3bgSQpH8yTHIVg_X7Jmvk8b";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* Hamburger */
+/* Hamburger Menu */
 document.getElementById('hamburger').onclick = () => {
   document.querySelector('.nav-links').classList.toggle('show');
 };
 
-/* Auth */
+/* ===========================
+   AUTH FUNCTIONS
+=========================== */
 async function login() {
-  const email = email.value;
-  const password = password.value;
+  const emailInput = document.getElementById("email").value;
+  const passwordInput = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: emailInput,
+    password: passwordInput
+  });
 
   document.getElementById("authStatus").textContent =
-    error ? error.message : "Logged in successfully";
+    error ? error.message : "Login successful";
 
   if (!error) showDashboard();
 }
 
 async function signup() {
-  const email = email.value;
-  const password = password.value;
+  const emailInput = document.getElementById("email").value;
+  const passwordInput = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabaseClient.auth.signUp({
+    email: emailInput,
+    password: passwordInput
+  });
 
   document.getElementById("authStatus").textContent =
-    error ? error.message : "Account created. You may now log in.";
+    error
+      ? error.message
+      : "Account created. Check your email or log in.";
 }
 
 async function logout() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   location.reload();
 }
 
-async function showDashboard() {
+function showDashboard() {
   document.getElementById("loginCard").style.display = "none";
   document.getElementById("portalDashboard").style.display = "block";
 }
 
-/* Upload */
+/* ===========================
+   FILE UPLOAD
+=========================== */
 async function uploadFile() {
   const file = document.getElementById("fileInput").files[0];
   if (!file) return;
 
-  const user = (await supabase.auth.getUser()).data.user;
-  if (!user) return;
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
 
-  const filePath = `${user.id}/${Date.now()}_${file.name}`;
-
-  const { error } = await supabase.storage
-    .from("documents")
-    .upload(filePath, file);
-
-  if (error) {
-    uploadStatus.textContent = error.message;
+  if (!user) {
+    alert("Please log in first.");
     return;
   }
 
-  const { data } = supabase.storage.from("documents").getPublicUrl(filePath);
+  const filePath = `${user.id}/${Date.now()}_${file.name}`;
 
-  await supabase.from("requests").insert({
-    user_id: user.id,
-    file_name: file.name,
-    file_url: data.publicUrl
-  });
+  const { error: uploadError } = await supabaseClient.storage
+    .from("documents")
+    .upload(filePath, file);
 
-  uploadStatus.textContent = "Document uploaded successfully!";
+  if (uploadError) {
+    document.getElementById("uploadStatus").textContent = uploadError.message;
+    return;
+  }
+
+  document.getElementById("uploadStatus").textContent =
+    "Document uploaded successfully!";
 }
 
-/* Session Check */
-supabase.auth.getSession().then(({ data }) => {
-  if (data.session) showDashboard();
+/* ===========================
+   SESSION CHECK
+=========================== */
+supabaseClient.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    showDashboard();
+  }
 });
 </script>
 
-</body>
 </html>
