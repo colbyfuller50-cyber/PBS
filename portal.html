@@ -7,50 +7,77 @@
 
 <link rel="stylesheet" href="style.css">
 
+<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+/* ===========================
+   Portal Styles
+=========================== */
 .portal-section {
-  padding: 4rem 1rem;
-  background: #f9f9f9;
-  text-align: center;
+    padding: 4rem 1rem;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.portal-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #1b3b1b;
+}
+
+.portal-section p {
+    margin-bottom: 2rem;
+    color: #333;
 }
 
 .portal-card {
-  background: #fff;
-  max-width: 420px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
-  text-align: left;
+    background: #fff;
+    max-width: 420px;
+    margin: 1.5rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    text-align: left;
 }
 
 .portal-card h2 {
-  text-align: center;
-  color: #1b3b1b;
+    color: #1b3b1b;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
-.portal-card input, button {
-  width: 100%;
-  padding: .8rem;
-  margin-bottom: 1rem;
+.portal-card input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
-button {
-  background: #4caf50;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.portal-card button {
+    width: 100%;
+    padding: 0.9rem;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#portalDashboard { display: none; }
+.portal-card button:hover {
+    background-color: #3e8e41;
+}
 
 .status {
-  text-align: center;
-  font-weight: bold;
-  color: #1b3b1b;
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: bold;
+    color: #1b3b1b;
+}
+
+#portalDashboard {
+    display: none;
 }
 </style>
 </head>
@@ -60,65 +87,106 @@ button {
 <header>
   <div class="container header-container">
     <a href="index.html">
-      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" class="logo">
+      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" class="logo" alt="PBS Logo">
     </a>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="screening.html">Request a Screening</a></li>
+        <li><a href="portal.html">Client Portal</a></li>
+      </ul>
+
+      <div class="hamburger" id="hamburger">
+        <div></div><div></div><div></div>
+      </div>
+    </nav>
   </div>
 </header>
 
 <section class="portal-section">
+  <div class="container">
+    <h1>Client Portal</h1>
+    <p>Securely log in to track requests and submit documents.</p>
 
-<h1>Client Portal</h1>
-<p>Log in to upload documents and track request status.</p>
+    <!-- LOGIN -->
+    <div class="portal-card" id="loginCard">
+      <h2>Login / Register</h2>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button onclick="login()">Login</button>
+      <button onclick="signup()" style="margin-top:10px;background:#1b3b1b;">Create Account</button>
+      <div class="status" id="authStatus"></div>
+    </div>
 
-<div class="portal-card" id="loginCard">
-  <h2>Login / Register</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="signup()" style="background:#1b3b1b;">Create Account</button>
-  <div class="status" id="authStatus"></div>
-</div>
+    <!-- DASHBOARD -->
+    <div class="portal-card" id="portalDashboard">
+      <h2>Submit Document</h2>
+      <input type="text" id="fileName" placeholder="Document Name">
+      <button onclick="uploadFile()">Submit Document</button>
+      <p class="status" id="uploadStatus"></p>
 
-<div class="portal-card" id="portalDashboard">
-  <h2>Upload Document</h2>
-  <input type="file" id="fileInput">
-  <button onclick="uploadFile()">Upload</button>
+      <hr style="margin:20px 0;">
+      <h2>My Requests</h2>
+      <div id="requestList">Loading your requests...</div>
 
-  <hr>
+      <button onclick="logout()" style="margin-top:15px;background:#777;">Logout</button>
+    </div>
 
-  <h2>My Requests</h2>
-  <div id="requestList">Loading...</div>
-
-  <button onclick="logout()" style="background:#777;">Logout</button>
-</div>
-
+  </div>
 </section>
 
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Palmetto Background Screening (PBS). All Rights Reserved.</p>
+  </div>
+</footer>
+
 <script>
-/* ================= SUPABASE ================= */
-const SUPABASE_URL = "https://snlhlitlenlqzabwaldg.supabase.co";
-const SUPABASE_KEY = "sb_publishable_4tKa1p6b3bgSQpH8yTHIVg_X7Jmvk8b";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ===========================
+   Supabase Config
+=========================== */
+const supabaseUrl = "https://snlhlitlenlqzabwaldg.supabase.co"; // Replace with your Supabase URL
+const supabaseKey = "sb_publishable_4tKa1p6b3bgSQpH8yTHIVg_X7Jmvk8b"; // Replace with your Supabase public key
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* ================= AUTH ================= */
+/* Hamburger Menu */
+document.getElementById('hamburger').onclick = () => {
+  document.querySelector('.nav-links').classList.toggle('show');
+};
+
+/* ===========================
+   AUTH FUNCTIONS
+=========================== */
 async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const emailInput = document.getElementById("email").value;
+  const passwordInput = document.getElementById("password").value;
 
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: emailInput,
+    password: passwordInput
+  });
+
   document.getElementById("authStatus").textContent =
-    error ? error.message : "Logged in successfully";
+    error ? error.message : "Login successful";
 
   if (!error) showDashboard();
 }
 
 async function signup() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const emailInput = document.getElementById("email").value;
+  const passwordInput = document.getElementById("password").value;
 
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  const { error } = await supabaseClient.auth.signUp({
+    email: emailInput,
+    password: passwordInput
+  });
+
   document.getElementById("authStatus").textContent =
-    error ? error.message : "Account created. Check your email.";
+    error
+      ? error.message
+      : "Account created. Check your email to verify or log in.";
 }
 
 async function logout() {
@@ -126,56 +194,80 @@ async function logout() {
   location.reload();
 }
 
-/* ================= DASHBOARD ================= */
 async function showDashboard() {
   document.getElementById("loginCard").style.display = "none";
   document.getElementById("portalDashboard").style.display = "block";
   loadRequests();
 }
 
-/* ================= UPLOAD ================= */
+/* ===========================
+   FILE / REQUEST UPLOAD
+=========================== */
 async function uploadFile() {
-  const file = document.getElementById("fileInput").files[0];
-  if (!file) return;
-
+  const fileName = document.getElementById("fileName").value;
   const { data: userData } = await supabaseClient.auth.getUser();
   const user = userData.user;
+  if (!user) return alert("Please log in first");
 
-  const path = `${user.id}/${Date.now()}_${file.name}`;
+  if (!fileName) return alert("Enter a document name");
 
-  await supabaseClient.storage.from("documents").upload(path, file);
+  const { error } = await supabaseClient
+    .from("requests")
+    .insert([{ user_email: user.email, file_name: fileName, status: "Submitted" }]);
 
-  await supabaseClient.from("requests").insert({
-    user_id: user.id,
-    file_name: file.name,
-    status: "Submitted"
-  });
-
-  loadRequests();
+  if (error) {
+    document.getElementById("uploadStatus").textContent = error.message;
+  } else {
+    document.getElementById("uploadStatus").textContent = "Document submitted successfully!";
+    document.getElementById("fileName").value = "";
+    loadRequests();
+  }
 }
 
-/* ================= REQUESTS ================= */
+/* ===========================
+   LOAD REQUESTS / STATUS
+=========================== */
 async function loadRequests() {
   const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
+  if (!user) return;
 
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("requests")
     .select("*")
-    .eq("user_id", userData.user.id)
+    .eq("user_email", user.email)
     .order("created_at", { ascending: false });
 
-  let html = "<ul>";
+  if (error) {
+    document.getElementById("requestList").textContent = error.message;
+    return;
+  }
+
+  if (data.length === 0) {
+    document.getElementById("requestList").textContent = "No requests submitted yet.";
+    return;
+  }
+
+  let html = "<ul style='list-style:none;padding:0'>";
   data.forEach(r => {
-    html += `<li><strong>${r.file_name}</strong> — ${r.status}</li>`;
+    html += `
+      <li style="padding:10px;border-bottom:1px solid #ddd">
+        <strong>${r.file_name}</strong><br>
+        Status: <span style="color:#1b3b1b;font-weight:bold">${r.status}</span>
+      </li>`;
   });
   html += "</ul>";
 
   document.getElementById("requestList").innerHTML = html;
 }
 
-/* ================= SESSION ================= */
+/* ===========================
+   SESSION CHECK
+=========================== */
 supabaseClient.auth.getSession().then(({ data }) => {
-  if (data.session) showDashboard();
+  if (data.session) {
+    showDashboard();
+  }
 });
 </script>
 
