@@ -10,21 +10,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* ===== YOUR ORIGINAL STYLES — UNCHANGED ===== */
 .portal-section {
     padding: 4rem 1rem;
     background-color: #f9f9f9;
     text-align: center;
 }
+
 .portal-section h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: #1b3b1b;
 }
+
 .portal-section p {
     margin-bottom: 2rem;
     color: #333;
 }
+
 .portal-card {
     background: #fff;
     max-width: 420px;
@@ -34,11 +36,13 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     text-align: left;
 }
+
 .portal-card h2 {
     color: #1b3b1b;
     margin-bottom: 1rem;
     text-align: center;
 }
+
 .portal-card input {
     width: 100%;
     padding: 0.8rem;
@@ -46,6 +50,7 @@
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+
 .portal-card button {
     width: 100%;
     padding: 0.9rem;
@@ -55,15 +60,18 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
 .portal-card button:hover {
     background-color: #3e8e41;
 }
+
 .status {
     text-align: center;
     margin-top: 1rem;
     font-weight: bold;
     color: #1b3b1b;
 }
+
 #portalDashboard {
     display: none;
 }
@@ -73,59 +81,63 @@
 <body>
 
 <section class="portal-section">
-<div class="container">
-<h1>Client Portal</h1>
-<p>Securely log in to track requests and submit documents.</p>
+  <div class="container">
+    <h1>Client Portal</h1>
+    <p>Securely log in to track requests and submit documents.</p>
 
-<div class="portal-card" id="loginCard">
-<h2>Login / Register</h2>
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<button onclick="signup()" style="margin-top:10px;background:#1b3b1b;">Create Account</button>
-<div class="status" id="authStatus"></div>
-</div>
+    <!-- LOGIN -->
+    <div class="portal-card" id="loginCard">
+      <h2>Login / Register</h2>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button onclick="login()">Login</button>
+      <button onclick="signup()" style="margin-top:10px;background:#1b3b1b;">Create Account</button>
+      <div class="status" id="authStatus"></div>
+    </div>
 
-<div class="portal-card" id="portalDashboard">
-<h2>Submit Document</h2>
+    <!-- DASHBOARD -->
+    <div class="portal-card" id="portalDashboard">
+      <h2>Submit Document</h2>
 
-<input type="file" id="fileInput">
-<button onclick="uploadFile()">Submit Document</button>
-<p class="status" id="uploadStatus"></p>
+      <input type="file" id="fileInput" required>
+      <button onclick="uploadFile()">Upload Document</button>
+      <p class="status" id="uploadStatus"></p>
 
-<hr style="margin:20px 0;">
-<h2>My Requests</h2>
-<div id="requestList">Loading your requests...</div>
+      <hr style="margin:20px 0;">
 
-<button onclick="logout()" style="margin-top:15px;background:#777;">Logout</button>
-</div>
+      <h2>My Requests</h2>
+      <div id="requestList">Loading...</div>
 
-</div>
+      <button onclick="logout()" style="margin-top:15px;background:#777;">Logout</button>
+    </div>
+
+  </div>
 </section>
 
 <script>
 const supabaseUrl = "https://snlhlitlenlqzabwaldg.supabase.co";
 const supabaseKey = "sb_publishable_4tKa1p6b3bgSQpH8yTHIVg_X7Jmvk8b";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 async function login() {
   const email = email.value;
   const password = password.value;
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   authStatus.textContent = error ? error.message : "Login successful";
   if (!error) showDashboard();
 }
 
 async function signup() {
-  const { error } = await supabaseClient.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email: email.value,
     password: password.value
   });
-  authStatus.textContent = error ? error.message : "Account created. Check your email.";
+  authStatus.textContent = error ? error.message : "Account created. Check email.";
 }
 
 async function logout() {
-  await supabaseClient.auth.signOut();
+  await supabase.auth.signOut();
   location.reload();
 }
 
@@ -136,16 +148,16 @@ async function showDashboard() {
 }
 
 async function uploadFile() {
-  const file = fileInput.files[0];
-  if (!file) return alert("Please select a file");
+  const file = document.getElementById("fileInput").files[0];
+  if (!file) return alert("Select a file");
 
-  const { data: userData } = await supabaseClient.auth.getUser();
-  const user = userData.user;
+  const { data: { user } } = await supabase.auth.getUser();
 
   const filePath = `${user.id}/${Date.now()}_${file.name}`;
 
-  const { error: uploadError } = await supabaseClient
-    .storage.from("documents")
+  const { error: uploadError } = await supabase
+    .storage
+    .from("documents")
     .upload(filePath, file);
 
   if (uploadError) {
@@ -153,7 +165,7 @@ async function uploadFile() {
     return;
   }
 
-  await supabaseClient.from("requests").insert([{
+  await supabase.from("requests").insert([{
     user_email: user.email,
     file_name: file.name,
     status: "Submitted"
@@ -165,34 +177,34 @@ async function uploadFile() {
 }
 
 async function loadRequests() {
-  const { data: userData } = await supabaseClient.auth.getUser();
-  const user = userData.user;
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const { data } = await supabaseClient
+  const { data } = await supabase
     .from("requests")
     .select("*")
     .eq("user_email", user.email)
     .order("created_at", { ascending: false });
 
   if (!data || data.length === 0) {
-    requestList.textContent = "No requests submitted yet.";
+    requestList.textContent = "No requests yet.";
     return;
   }
 
   requestList.innerHTML = data.map(r => `
     <div style="padding:10px;border-bottom:1px solid #ddd">
       <strong>${r.file_name}</strong><br>
-      Status: <strong>${r.status}</strong>
+      Status: <b>${r.status}</b>
     </div>
   `).join("");
 }
 
-supabaseClient.auth.getSession().then(({ data }) => {
+supabase.auth.getSession().then(({ data }) => {
   if (data.session) showDashboard();
 });
 </script>
 
 </body>
 </html>
+
 
 
