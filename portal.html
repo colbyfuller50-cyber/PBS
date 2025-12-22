@@ -7,9 +7,13 @@
 
 <link rel="stylesheet" href="style.css">
 
+<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+/* ===========================
+   Portal Styles
+   =========================== */
 .portal-section {
     padding: 4rem 1rem;
     background-color: #f9f9f9;
@@ -65,20 +69,41 @@
     background-color: #3e8e41;
 }
 
+#portalDashboard {
+    display: none;
+}
+
 .status {
     text-align: center;
     margin-top: 1rem;
     font-weight: bold;
     color: #1b3b1b;
 }
-
-#portalDashboard {
-    display: none;
-}
 </style>
 </head>
 
 <body>
+
+<header>
+  <div class="container header-container">
+    <a href="index.html">
+      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" class="logo" alt="PBS Logo">
+    </a>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="screening.html">Request a Screening</a></li>
+        <li><a href="portal.html">Client Portal</a></li>
+      </ul>
+
+      <div class="hamburger" id="hamburger">
+        <div></div><div></div><div></div>
+      </div>
+    </nav>
+  </div>
+</header>
 
 <section class="portal-section">
   <div class="container">
@@ -97,55 +122,56 @@
 
     <!-- DASHBOARD -->
     <div class="portal-card" id="portalDashboard">
-      <h2>Submit Document</h2>
-
-      <input type="file" id="fileInput" required>
+      <h2>Upload Documents</h2>
+      <input type="file" id="fileInput">
       <button onclick="uploadFile()">Upload Document</button>
-      <p class="status" id="uploadStatus"></p>
-
-      <hr style="margin:20px 0;">
-
-      <h2>My Requests</h2>
-      <div id="requestList">Loading...</div>
-
+      <div class="status" id="uploadStatus"></div>
       <button onclick="logout()" style="margin-top:15px;background:#777;">Logout</button>
     </div>
 
   </div>
 </section>
 
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Palmetto Background Screening (PBS). All Rights Reserved.</p>
+  </div>
+</footer>
+
 <script>
-const supabaseUrl = "https://snlhlitlenlqzabwaldg.supabase.co";
-const supabaseKey = "sb_publishable_4tKa1p6b3bgSQpH8yTHIVg_X7Jmvk8b";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+/* ===========================
+   Supabase Config
+   =========================== */
+const supabaseUrl = "PASTE_YOUR_SUPABASE_URL";
+const supabaseKey = "PASTE_YOUR_ANON_KEY";
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* DOM Elements */
-const authStatus = document.getElementById("authStatus");
-const loginCard = document.getElementById("loginCard");
-const portalDashboard = document.getElementById("portalDashboard");
-const requestList = document.getElementById("requestList");
-const uploadStatus = document.getElementById("uploadStatus");
-const fileInput = document.getElementById("fileInput");
+/* Hamburger */
+document.getElementById('hamburger').onclick = () => {
+  document.querySelector('.nav-links').classList.toggle('show');
+};
 
-/* AUTH */
+/* Auth */
 async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = email.value;
+  const password = password.value;
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-  authStatus.textContent = error ? error.message : "Login successful";
+  document.getElementById("authStatus").textContent =
+    error ? error.message : "Logged in successfully";
+
   if (!error) showDashboard();
 }
 
 async function signup() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = email.value;
+  const password = password.value;
 
   const { error } = await supabase.auth.signUp({ email, password });
 
-  authStatus.textContent =
-    error ? error.message : "Account created. Check your email.";
+  document.getElementById("authStatus").textContent =
+    error ? error.message : "Account created. You may now log in.";
 }
 
 async function logout() {
@@ -153,77 +179,46 @@ async function logout() {
   location.reload();
 }
 
-/* DASHBOARD */
-function showDashboard() {
-  loginCard.style.display = "none";
-  portalDashboard.style.display = "block";
-  loadRequests();
+async function showDashboard() {
+  document.getElementById("loginCard").style.display = "none";
+  document.getElementById("portalDashboard").style.display = "block";
 }
 
-/* FILE UPLOAD */
+/* Upload */
 async function uploadFile() {
-  const file = fileInput.files[0];
-  if (!file) return alert("Select a file");
+  const file = document.getElementById("fileInput").files[0];
+  if (!file) return;
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = (await supabase.auth.getUser()).data.user;
+  if (!user) return;
 
   const filePath = `${user.id}/${Date.now()}_${file.name}`;
 
-  const { error: uploadError } = await supabase
-    .storage
+  const { error } = await supabase.storage
     .from("documents")
     .upload(filePath, file);
 
-  if (uploadError) {
-    uploadStatus.textContent = uploadError.message;
+  if (error) {
+    uploadStatus.textContent = error.message;
     return;
   }
 
-  await supabase.from("requests").insert([{
-    user_email: user.email,
+  const { data } = supabase.storage.from("documents").getPublicUrl(filePath);
+
+  await supabase.from("requests").insert({
+    user_id: user.id,
     file_name: file.name,
-    status: "Submitted"
-  }]);
+    file_url: data.publicUrl
+  });
 
-  uploadStatus.textContent = "✅ Document uploaded successfully!";
-  fileInput.value = "";
-  loadRequests();
+  uploadStatus.textContent = "Document uploaded successfully!";
 }
 
-/* LOAD REQUESTS */
-async function loadRequests() {
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data } = await supabase
-    .from("requests")
-    .select("*")
-    .eq("user_email", user.email)
-    .order("created_at", { ascending: false });
-
-  if (!data || data.length === 0) {
-    requestList.textContent = "No requests yet.";
-    return;
-  }
-
-  requestList.innerHTML = data.map(r => `
-    <div style="padding:10px;border-bottom:1px solid #ddd">
-      <strong>${r.file_name}</strong><br>
-      Status: <b>${r.status}</b>
-    </div>
-  `).join("");
-}
-
-/* SESSION CHECK */
+/* Session Check */
 supabase.auth.getSession().then(({ data }) => {
   if (data.session) showDashboard();
 });
 </script>
 
-
 </body>
 </html>
-
-
-
-
-
