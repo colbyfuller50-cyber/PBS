@@ -9,65 +9,177 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-.portal-section {
-  padding: 4rem 1rem;
-  background:#f9f9f9;
-  text-align:center;
+:root {
+  --pbs-green:#1b3b1b;
+  --pbs-accent:#4caf50;
+  --pbs-light:#f4f7f4;
+  --pbs-dark:#111;
 }
+
+/* Page */
+.portal-section {
+  min-height:100vh;
+  padding:4rem 1rem;
+  background:linear-gradient(180deg, #f9f9f9, #eef2ee);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* Headings */
+.portal-section h1 {
+  color:var(--pbs-green);
+  font-size:2.5rem;
+  margin-bottom:.5rem;
+}
+.portal-section p {
+  color:#444;
+  margin-bottom:2.5rem;
+  max-width:520px;
+}
+
+/* Cards */
 .portal-card {
   background:#fff;
-  max-width:420px;
-  margin:1.5rem auto;
-  padding:2rem;
-  border-radius:10px;
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
-}
-.portal-card input, button {
   width:100%;
-  padding:.8rem;
-  margin-bottom:1rem;
+  max-width:430px;
+  padding:2.2rem;
+  border-radius:14px;
+  box-shadow:0 15px 35px rgba(0,0,0,.08);
+  margin-bottom:2rem;
+  transition:transform .2s ease, box-shadow .2s ease;
 }
-button {
-  background:#4caf50;
-  color:#fff;
-  border:none;
-  border-radius:5px;
+.portal-card:hover {
+  transform:translateY(-2px);
+  box-shadow:0 18px 40px rgba(0,0,0,.1);
 }
-.status {
-  font-weight:bold;
+
+.portal-card h2 {
   text-align:center;
+  color:var(--pbs-green);
+  margin-bottom:1.5rem;
 }
+
+/* Inputs */
+.portal-card input[type="email"],
+.portal-card input[type="password"],
+.portal-card input[type="file"] {
+  width:100%;
+  padding:.85rem;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin-bottom:1rem;
+  transition:border .2s ease, box-shadow .2s ease;
+}
+.portal-card input:focus {
+  outline:none;
+  border-color:var(--pbs-accent);
+  box-shadow:0 0 0 3px rgba(76,175,80,.15);
+}
+
+/* Buttons */
+.portal-card button {
+  width:100%;
+  padding:.9rem;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease;
+}
+.portal-card button:active {
+  transform:scale(.98);
+}
+
+.btn-primary {
+  background:var(--pbs-accent);
+  color:#fff;
+}
+.btn-primary:hover {
+  background:#3f9a45;
+}
+
+.btn-secondary {
+  background:var(--pbs-green);
+  color:#fff;
+}
+.btn-secondary:hover {
+  background:#132a13;
+}
+
+.btn-logout {
+  background:#777;
+  color:#fff;
+}
+.btn-logout:hover {
+  background:#555;
+}
+
+/* Status text */
+.status {
+  margin-top:.5rem;
+  text-align:center;
+  font-weight:600;
+  color:var(--pbs-green);
+}
+
+/* Requests list */
+#requestList div {
+  padding:.75rem 0;
+  border-bottom:1px solid #e0e0e0;
+}
+#requestList strong {
+  color:var(--pbs-dark);
+}
+#requestList b {
+  color:var(--pbs-green);
+}
+
+/* Hide dashboard */
 #portalDashboard { display:none; }
+
+/* Mobile */
+@media(max-width:480px){
+  .portal-section h1 { font-size:2rem; }
+}
 </style>
 </head>
 
 <body>
 
 <section class="portal-section">
-<h1>Client Portal</h1>
 
+<h1>Client Portal</h1>
+<p>Securely upload documents and track the status of your background screening requests.</p>
+
+<!-- LOGIN -->
 <div class="portal-card" id="loginCard">
   <h2>Login / Register</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="signup()">Create Account</button>
+  <input id="email" type="email" placeholder="Email" required>
+  <input id="password" type="password" placeholder="Password" required>
+
+  <button class="btn-primary" onclick="login()">Login</button>
+  <button class="btn-secondary" style="margin-top:.5rem" onclick="signup()">Create Account</button>
+
   <div class="status" id="authStatus"></div>
 </div>
 
+<!-- DASHBOARD -->
 <div class="portal-card" id="portalDashboard">
   <h2>Upload Document</h2>
 
-  <input type="file" id="fileInput">
-  <button onclick="uploadFile()">Submit Document</button>
+  <input type="file" id="fileInput" required>
+  <button class="btn-primary" onclick="uploadFile()">Submit Document</button>
   <div class="status" id="uploadStatus"></div>
 
-  <hr>
-  <h2>My Requests</h2>
-  <div id="requestList"></div>
+  <hr style="margin:1.8rem 0">
 
-  <button onclick="logout()" style="background:#777">Logout</button>
+  <h2>My Requests</h2>
+  <div id="requestList">Loading...</div>
+
+  <button class="btn-logout" style="margin-top:1.5rem" onclick="logout()">Logout</button>
 </div>
+
 </section>
 
 <script>
@@ -80,7 +192,7 @@ async function login() {
     email: email.value,
     password: password.value
   });
-  authStatus.textContent = error ? error.message : "Logged in";
+  authStatus.textContent = error ? error.message : "Logged in successfully";
   if (!error) showDashboard();
 }
 
@@ -89,7 +201,7 @@ async function signup() {
     email: email.value,
     password: password.value
   });
-  authStatus.textContent = error || "Check email to confirm account";
+  authStatus.textContent = error ? error.message : "Check your email to confirm your account";
 }
 
 async function logout() {
@@ -105,16 +217,17 @@ async function showDashboard() {
 
 async function uploadFile() {
   const file = fileInput.files[0];
-  if (!file) return alert("Select a file");
+  if (!file) return alert("Please select a file");
 
   const { data: userData } = await supabaseClient.auth.getUser();
   const user = userData.user;
 
-  const filePath = `${user.id}/${Date.now()}_${file.name}`;
+  const path = `${user.id}/${Date.now()}_${file.name}`;
 
-  const { error: uploadError } = await supabaseClient.storage
+  const { error: uploadError } = await supabaseClient
+    .storage
     .from("documents")
-    .upload(filePath, file);
+    .upload(path, file);
 
   if (uploadError) {
     uploadStatus.textContent = uploadError.message;
@@ -131,6 +244,7 @@ async function uploadFile() {
     ? error.message
     : "✅ Document uploaded successfully";
 
+  fileInput.value = "";
   loadRequests();
 }
 
@@ -144,12 +258,12 @@ async function loadRequests() {
     .order("created_at", { ascending:false });
 
   if (!data || data.length === 0) {
-    requestList.textContent = "No requests yet.";
+    requestList.textContent = "No requests submitted yet.";
     return;
   }
 
   requestList.innerHTML = data.map(r => `
-    <div style="border-bottom:1px solid #ddd;padding:10px">
+    <div>
       <strong>${r.file_name}</strong><br>
       Status: <b>${r.status}</b>
     </div>
