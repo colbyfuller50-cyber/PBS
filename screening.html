@@ -4,25 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Palmetto Background Screening | Request a Screening</title>
+
 <link rel="stylesheet" href="style.css">
 
 <style>
-/* CTA Button */
-.form-cta {
-  display: inline-block;
-  margin-bottom: 2rem;
-  padding: 1rem 2rem;
-  background-color: #1b3b1b;
-  color: #fff;
-  font-weight: bold;
-  text-decoration: none;
+/* IMPORTANT NOTICE */
+.important-notice {
+  background: #f0f7f2;
+  border-left: 6px solid #1b3b1b;
+  padding: 1.5rem;
+  margin: 2rem 0;
   border-radius: 6px;
-  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.form-cta:hover {
+.important-notice h3 {
+  margin-top: 0;
+  color: #1b3b1b;
+}
+
+.important-notice p {
+  margin: 0.5rem 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Background Form Button */
+.background-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.9rem 1.5rem;
+  background-color: #1b3b1b;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.background-btn:hover {
   background-color: #145214;
-  transform: translateY(-2px);
 }
 </style>
 </head>
@@ -32,10 +52,8 @@
 <header>
   <div class="container header-container">
     <a href="index.html">
-      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" 
-           alt="PBS Logo" class="logo">
+      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" alt="PBS Logo" class="logo">
     </a>
-
     <nav>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
@@ -54,14 +72,26 @@
 
 <section class="contact">
   <div class="container">
-
     <h1>Request a Screening</h1>
 
-    <!-- NEW BUTTON -->
-    <a href="background-check-form.html" class="form-cta">
-      Start Background Check Form
-    </a>
+    <!-- IMPORTANT NOTICE -->
+    <div class="important-notice">
+      <h3>Important Notice – Background Check Authorization Required</h3>
+      <p>
+        This form <strong>must be completed in addition to the screening request form</strong>
+        before any background check can be conducted.
+      </p>
+      <p>
+        <strong>Employers:</strong> Please ensure that each employee or candidate completes
+        the Background Check Consent Form prior to submission.
+      </p>
 
+      <a href="Background-request-form.html" class="background-btn">
+        Start Background Check Form
+      </a>
+    </div>
+
+    <!-- REQUEST FORM -->
     <form action="https://formspree.io/f/mnjadbqz" method="POST">
       <label for="name">Full Name</label>
       <input type="text" name="name" id="name" placeholder="John Doe" required>
@@ -73,17 +103,15 @@
       <select name="service" id="service" required>
         <option value="employment">Employment Screening</option>
         <option value="tenant">Tenant Screening</option>
-        <option value="volunteer">Volunteer/Compliance Screening</option>
+        <option value="volunteer">Volunteer / Compliance Screening</option>
         <option value="self">Contractor Self Screening</option>
       </select>
 
       <label for="message">Additional Details</label>
-      <textarea name="message" id="message" rows="5"
-        placeholder="Your message here..." required></textarea>
+      <textarea name="message" id="message" rows="5" placeholder="Your message here..." required></textarea>
 
       <button type="submit">Send Request</button>
     </form>
-
   </div>
 </section>
 
@@ -105,3 +133,4 @@ hamburger.addEventListener('click', () => {
 
 </body>
 </html>
+
