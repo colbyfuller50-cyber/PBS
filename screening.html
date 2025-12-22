@@ -5,13 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Palmetto Background Screening | Request a Screening</title>
 <link rel="stylesheet" href="style.css">
+
+<style>
+/* CTA Button */
+.form-cta {
+  display: inline-block;
+  margin-bottom: 2rem;
+  padding: 1rem 2rem;
+  background-color: #1b3b1b;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.form-cta:hover {
+  background-color: #145214;
+  transform: translateY(-2px);
+}
+</style>
 </head>
+
 <body>
+
 <header>
   <div class="container header-container">
-    <!-- Clickable Logo -->
     <a href="index.html">
-      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" alt="PBS Logo" class="logo">     <nav>
+      <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" 
+           alt="PBS Logo" class="logo">
+    </a>
+
+    <nav>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="services.html">Services</a></li>
@@ -28,33 +53,48 @@
 </header>
 
 <section class="contact">
-<div class="container">
-<h1>Request a Screening</h1>
-<form action="https://formspree.io/f/mnjadbqz" method="POST">
-<label for="name">Full Name</label>
-<input type="text" name="name" id="name" placeholder="John Doe" required>
-<label for="email">Email</label>
-<input type="email" name="email" id="email" placeholder="john@example.com" required>
-<label for="service">Service Interested In</label>
-<select name="service" id="service" required>
-<option value="employment">Employment Screening</option>
-<option value="tenant">Tenant Screening</option>
-<option value="volunteer">Volunteer/Compliance Screening</option>
-<option value="self">Contractor Self Screening</option>
-</select>
-<label for="message">Additional Details</label>
-<textarea name="message" id="message" rows="5" placeholder="Your message here..." required></textarea>
-<button type="submit">Send Request</button>
-</form>
-</div>
+  <div class="container">
+
+    <h1>Request a Screening</h1>
+
+    <!-- NEW BUTTON -->
+    <a href="Background-request-form.html" class="form-cta">
+      Start Background Check Form
+    </a>
+
+    <form action="https://formspree.io/f/mnjadbqz" method="POST">
+      <label for="name">Full Name</label>
+      <input type="text" name="name" id="name" placeholder="John Doe" required>
+
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" placeholder="john@example.com" required>
+
+      <label for="service">Service Interested In</label>
+      <select name="service" id="service" required>
+        <option value="employment">Employment Screening</option>
+        <option value="tenant">Tenant Screening</option>
+        <option value="volunteer">Volunteer/Compliance Screening</option>
+        <option value="self">Contractor Self Screening</option>
+      </select>
+
+      <label for="message">Additional Details</label>
+      <textarea name="message" id="message" rows="5"
+        placeholder="Your message here..." required></textarea>
+
+      <button type="submit">Send Request</button>
+    </form>
+
+  </div>
 </section>
+
 <footer>
-<div class="container">
-<p>&copy; 2025 Palmetto Background Screening (PBS). All Rights Reserved.</p>
-<p>FCRA-compliant screening services.</p>
-</div>
+  <div class="container">
+    <p>&copy; 2025 Palmetto Background Screening (PBS). All Rights Reserved.</p>
+    <p>FCRA-compliant screening services.</p>
+  </div>
 </footer>
-  <script>
+
+<script>
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.querySelector('.nav-links');
 
