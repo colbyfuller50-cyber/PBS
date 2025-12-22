@@ -7,13 +7,10 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
+/* =========================
+   PBS FORM STYLES
+========================= */
 body {
   background: #f9f9f9;
   font-family: Arial, sans-serif;
@@ -50,13 +47,20 @@ body {
   font-weight: bold;
   display: block;
   margin-bottom: .4rem;
+  color: #333;
 }
 
-.form-group input {
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
   padding: .8rem;
   border-radius: 5px;
   border: 1px solid #ccc;
+}
+
+.form-group textarea {
+  resize: vertical;
 }
 
 .section-title {
@@ -72,6 +76,14 @@ body {
   padding: 1rem;
   border-radius: 5px;
   font-size: .95rem;
+}
+
+.checkbox-group {
+  margin-top: 1rem;
+}
+
+.checkbox-group input {
+  margin-right: .5rem;
 }
 
 .submit-btn {
@@ -90,10 +102,11 @@ body {
   background: #3e8e41;
 }
 
-.status {
+.footer-note {
   text-align: center;
-  margin-top: 1rem;
-  font-weight: bold;
+  font-size: .85rem;
+  margin-top: 1.5rem;
+  color: #555;
 }
 </style>
 </head>
@@ -103,121 +116,103 @@ body {
 <div class="form-container">
 
   <div class="form-header">
-    <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true">
+    <img src="https://github.com/colbyfuller50-cyber/PBS/blob/main/PBS%20Logo.png?raw=true" alt="Palmetto Background Screening Logo">
     <h1>Background Check Authorization</h1>
     <p>Please complete all fields accurately.</p>
   </div>
 
-  <form id="authForm">
+  <!-- ================= PERSONAL INFO ================= -->
+  <div class="section-title">Applicant Information</div>
 
-    <div class="section-title">Applicant Information</div>
+  <div class="form-group">
+    <label>Full Legal Name</label>
+    <input type="text" required>
+  </div>
 
-    <div class="form-group">
-      <label>Full Legal Name</label>
-      <input id="fullName" required>
-    </div>
+  <div class="form-group">
+    <label>Date of Birth</label>
+    <input type="date" required>
+  </div>
+ 
+ <div class="form-group">
+    <label>Employer</label>
+    <input type="text" required>
+  </div>
 
-    <div class="form-group">
-      <label>Date of Birth</label>
-      <input id="dob" type="date" required>
-    </div>
+  <div class="form-group">
+    <label>Social Security Number</label>
+    <input type="text" placeholder="XXX-XX-XXXX" required>
+  </div>
 
-    <div class="form-group">
-      <label>Employer</label>
-      <input id="employer" required>
-    </div>
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" required>
+  </div>
 
-    <div class="form-group">
-      <label>Social Security Number</label>
-      <input id="ssn" placeholder="XXX-XX-XXXX" required>
-    </div>
+  <div class="form-group">
+    <label>Phone Number</label>
+    <input type="tel" required>
+  </div>
 
-    <div class="form-group">
-      <label>Email</label>
-      <input id="email" type="email" required>
-    </div>
+  <div class="form-group">
+    <label>Current Address</label>
+    <input type="text" required>
+  </div>
 
-    <div class="form-group">
-      <label>Phone</label>
-      <input id="phone" required>
-    </div>
+  <div class="form-group">
+    <label>City, State, ZIP</label>
+    <input type="text" required>
+  </div>
 
-    <div class="form-group">
-      <label>Address</label>
-      <input id="address" required>
-    </div>
+  <!-- ================= DISCLOSURE ================= -->
+  <div class="section-title">Fair Credit Reporting Act (FCRA) Disclosure</div>
 
-    <div class="section-title">Authorization</div>
+  <div class="consent-box">
+    Palmetto Background Screening may obtain a consumer report and/or investigative
+    consumer report for employment, contracting, licensing, or volunteer purposes.
+    This report may include information about your character, general reputation,
+    personal characteristics, criminal history, education, employment history,
+    and other background information as permitted by law.
+  </div>
 
-    <div class="consent-box">
-      I authorize Palmetto Background Screening to conduct a background check
-      in accordance with the Fair Credit Reporting Act (FCRA).
-    </div>
+  <!-- ================= AUTHORIZATION ================= -->
+  <div class="section-title">Authorization & Consent</div>
 
-    <div class="form-group">
-      <label>Electronic Signature (Type Full Name)</label>
-      <input id="signature" required>
-    </div>
+  <div class="consent-box">
+    I hereby authorize Palmetto Background Screening to obtain consumer reports
+    and/or investigative consumer reports about me from a consumer reporting agency.
+    I understand that this authorization is voluntary and is required to proceed
+    with the background screening process.
+  </div>
 
-    <div class="form-group">
-      <label>Date</label>
-      <input id="signDate" type="date" required>
-    </div>
+  <div class="checkbox-group">
+    <label>
+      <input type="checkbox" required>
+      I acknowledge that I have read and understand the FCRA disclosure and authorize
+      Palmetto Background Screening to conduct a background check.
+    </label>
+  </div>
 
-    <button class="submit-btn" type="submit">Submit Authorization</button>
-    <div class="status" id="status"></div>
+  <!-- ================= SIGNATURE ================= -->
+  <div class="section-title">Electronic Signature</div>
 
-  </form>
+  <div class="form-group">
+    <label>Type Full Name as Signature</label>
+    <input type="text" required>
+  </div>
+
+  <div class="form-group">
+    <label>Date</label>
+    <input type="date" required>
+  </div>
+
+  <button class="submit-btn">Submit Authorization</button>
+
+  <div class="footer-note">
+    © 2025 Palmetto Background Screening • FCRA Compliant
+  </div>
+
 </div>
-
-<script>
-const { jsPDF } = window.jspdf;
-
-// 🔑 SUPABASE CONFIG
-const supabase = supabase.createClient(
-  "SUPABASE_URL",
-  "SUPABASE_ANON_KEY"
-);
-
-document.getElementById("authForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  document.getElementById("status").textContent = "Generating secure PDF...";
-
-  const pdf = new jsPDF();
-  let y = 15;
-
-  function line(label, value) {
-    pdf.text(`${label}: ${value}`, 10, y);
-    y += 8;
-  }
-
-  line("Full Name", fullName.value);
-  line("DOB", dob.value);
-  line("Employer", employer.value);
-  line("SSN", ssn.value);
-  line("Email", email.value);
-  line("Phone", phone.value);
-  line("Address", address.value);
-  y += 5;
-  line("Authorized Signature", signature.value);
-  line("Date", signDate.value);
-
-  const fileName = `background_authorization_${fullName.value.replace(/\s+/g,'_')}_${Date.now()}.pdf`;
-
-  const pdfBlob = pdf.output("blob");
-
-  const { error } = await supabase.storage
-    .from("authorizations")
-    .upload(fileName, pdfBlob, {
-      contentType: "application/pdf"
-    });
-
-  document.getElementById("status").textContent =
-    error ? "❌ Error saving authorization." : "✅ Authorization submitted successfully.";
-
-  if (!error) document.getElementById("authForm").reset();
-});
-</script>
 
 </body>
 </html>
