@@ -8,12 +8,17 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
-/* IMPORTANT NOTICE */
+/* IMPORTANT NOTICE STYLING */
+.important-notice-wrapper {
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
 .important-notice {
   background: #f0f7f2;
   border-left: 6px solid #1b3b1b;
   padding: 1.5rem;
-  margin: 2rem 0;
   border-radius: 6px;
 }
 
@@ -23,30 +28,30 @@
 }
 
 .important-notice p {
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
   color: #333;
   line-height: 1.5;
 }
 
-/* Background Form Button */
-.background-btn {
+/* BUTTON */
+.start-form-btn {
+  margin-top: 1.25rem;
   display: inline-block;
-  margin-top: 1rem;
-  padding: 0.9rem 1.5rem;
   background-color: #1b3b1b;
   color: #fff;
+  padding: 0.9rem 1.5rem;
   text-decoration: none;
-  font-weight: bold;
   border-radius: 5px;
+  font-weight: bold;
   transition: background 0.3s ease;
 }
 
-.background-btn:hover {
+.start-form-btn:hover {
   background-color: #145214;
 }
 </style>
-</head>
 
+</head>
 <body>
 
 <header>
@@ -72,23 +77,24 @@
 
 <section class="contact">
   <div class="container">
+
     <h1>Request a Screening</h1>
 
     <!-- IMPORTANT NOTICE -->
-    <div class="important-notice">
-      <h3>Important Notice – Background Check Authorization Required</h3>
-      <p>
-        This form <strong>must be completed in addition to the screening request form</strong>
-        before any background check can be conducted.
-      </p>
-      <p>
-        <strong>Employers:</strong> Please ensure that each employee or candidate completes
-        the Background Check Consent Form prior to submission.
-      </p>
+    <div class="important-notice-wrapper">
+      <div class="important-notice">
+        <h3>Important Notice – Background Check Authorization Required</h3>
+        <p>
+          This form must be completed <strong>in addition to the screening request form</strong> before any background check can be conducted.
+        </p>
+        <p>
+          <strong>Employers:</strong> Please ensure that each employee or candidate completes the Background Check Consent Form prior to submission.
+        </p>
 
-      <a href="Background-request-form.html" class="background-btn">
-        Start Background Check Form
-      </a>
+        <a href="Background-request-form.html" class="start-form-btn">
+          Start Background Check Form
+        </a>
+      </div>
     </div>
 
     <!-- REQUEST FORM -->
@@ -103,7 +109,7 @@
       <select name="service" id="service" required>
         <option value="employment">Employment Screening</option>
         <option value="tenant">Tenant Screening</option>
-        <option value="volunteer">Volunteer / Compliance Screening</option>
+        <option value="volunteer">Volunteer/Compliance Screening</option>
         <option value="self">Contractor Self Screening</option>
       </select>
 
@@ -112,6 +118,7 @@
 
       <button type="submit">Send Request</button>
     </form>
+
   </div>
 </section>
 
