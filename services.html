@@ -65,11 +65,33 @@
   margin-bottom: 2rem;
 }
 
+/* CLICKABLE CARD WRAPPER */
+.pricing-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* CARD BASE */
 .pricing-card {
   background: #fff;
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  transition: all .25s ease;
+  cursor: pointer;
+  height: 100%;
+}
+
+/* HOVER EFFECT */
+.pricing-link:hover .pricing-card {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+  border: 2px solid #4caf50;
+}
+
+/* ACTIVE CLICK */
+.pricing-link:active .pricing-card {
+  transform: translateY(-2px);
 }
 
 .pricing-card h3 {
@@ -122,7 +144,7 @@
   Transparent, FCRA-compliant screening solutions.
 </p>
 
-<!-- ================= OPTION B ================= -->
+<!-- ================= OPTION A ================= -->
 <h2 class="pricing-heading">Option A: Professional Employer Pricing</h2>
 <p class="pricing-note">
   Recommended for employers, property managers, and organizations.
@@ -130,42 +152,48 @@
 
 <div class="pricing-grid">
 
-  <div class="pricing-card">
-    <h3>Basic</h3>
-    <div class="price">$59–$69</div>
-    <ul>
-      <li>SSN Trace</li>
-      <li>Sex Offender Registry</li>
-      <li>Global Watchlist Search</li>
-      <li>National Criminal Search</li>
-    </ul>
-  </div>
+  <a href="screening.html" class="pricing-link">
+    <div class="pricing-card">
+      <h3>Basic</h3>
+      <div class="price">$59–$69</div>
+      <ul>
+        <li>SSN Trace</li>
+        <li>Sex Offender Registry</li>
+        <li>Global Watchlist Search</li>
+        <li>National Criminal Search</li>
+      </ul>
+    </div>
+  </a>
 
-  <div class="pricing-card featured">
-    <h3>Essential</h3>
-    <div class="price">$99</div>
-    <ul>
-      <li>SSN Trace</li>
-      <li>Sex Offender Registry</li>
-      <li>Global Watchlist Search</li>
-      <li>National Criminal Search</li>
-      <li>County Criminal Search (7-Year)</li>
-    </ul>
-  </div>
+  <a href="screening.html" class="pricing-link">
+    <div class="pricing-card featured">
+      <h3>Essential</h3>
+      <div class="price">$99</div>
+      <ul>
+        <li>SSN Trace</li>
+        <li>Sex Offender Registry</li>
+        <li>Global Watchlist Search</li>
+        <li>National Criminal Search</li>
+        <li>County Criminal Search (7-Year)</li>
+      </ul>
+    </div>
+  </a>
 
-  <div class="pricing-card">
-    <h3>Complete</h3>
-    <div class="price">$149–$169</div>
-    <ul>
-      <li>SSN Trace</li>
-      <li>Sex Offender Registry</li>
-      <li>Global Watchlist Search</li>
-      <li>National Criminal Search</li>
-      <li>County Criminal Search (7-Year)</li>
-      <li>Federal Criminal Search (10-Year)</li>
-      <li>State Criminal Search (7-Year)</li>
-    </ul>
-  </div>
+  <a href="screening.html" class="pricing-link">
+    <div class="pricing-card">
+      <h3>Complete</h3>
+      <div class="price">$149–$169</div>
+      <ul>
+        <li>SSN Trace</li>
+        <li>Sex Offender Registry</li>
+        <li>Global Watchlist Search</li>
+        <li>National Criminal Search</li>
+        <li>County Criminal Search (7-Year)</li>
+        <li>Federal Criminal Search (10-Year)</li>
+        <li>State Criminal Search (7-Year)</li>
+      </ul>
+    </div>
+  </a>
 
 </div>
 
@@ -175,7 +203,7 @@
   ✔ Sustainable pricing for long-term partnerships
 </div>
 
-<!-- ================= OPTION C ================= -->
+<!-- ================= OPTION B ================= -->
 <h2 class="pricing-heading">Option B: Self-Screening Premium</h2>
 <p class="pricing-note">
   Designed for individuals, contractors, and tenants.
@@ -183,23 +211,29 @@
 
 <div class="pricing-grid">
 
-  <div class="pricing-card">
-    <h3>Basic</h3>
-    <div class="price">$69–$79</div>
-    <p class="best-for">Independent Contractors / Volunteers</p>
-  </div>
+  <a href="screening.html" class="pricing-link">
+    <div class="pricing-card">
+      <h3>Basic</h3>
+      <div class="price">$69–$79</div>
+      <p class="best-for">Independent Contractors / Volunteers</p>
+    </div>
+  </a>
 
-  <div class="pricing-card">
-    <h3>Essential</h3>
-    <div class="price">$109–$119</div>
-    <p class="best-for">Tenants / Small Employers</p>
-  </div>
+  <a href="screening.html" class="pricing-link">
+    <div class="pricing-card">
+      <h3>Essential</h3>
+      <div class="price">$109–$119</div>
+      <p class="best-for">Tenants / Small Employers</p>
+    </div>
+  </a>
 
-  <div class="pricing-card">
-    <h3>Complete</h3>
-    <div class="price">$179–$199</div>
-    <p class="best-for">Comprehensive Self-Screening</p>
-  </div>
+  <a href="screening.html" class="pricing-link">
+    <div class="pricing-card">
+      <h3>Complete</h3>
+      <div class="price">$179–$199</div>
+      <p class="best-for">Comprehensive Self-Screening</p>
+    </div>
+  </a>
 
 </div>
 
@@ -209,6 +243,7 @@
 </p>
 
 </section>
+
 
 
 <footer>
